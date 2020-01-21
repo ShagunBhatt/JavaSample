@@ -1,10 +1,15 @@
-FROM maven:3.5-jdk-8-alpine
-#WORKDIR /app
-COPY . .
-RUN mvn install
-#RUN mvn spring-boot:run
-#FROM openjdk:8-jre-alpine
-#WORKDIR /app
-#COPY --from=build /app/target/spring-petclinic-1.5.1.jar /app
-#CMD ["mvn spring-boot:run"]
-CMD ["mvn spring-boot:run"]
+#
+# Build stage
+#
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
+
+#
+# Package stage
+#
+FROM openjdk:11-jre-slim
+COPY --from=build /home/app/target/hello-springboot-1.5.8.RELEASE.jar /usr/local/lib/hello-springboot-1.5.8.RELEASE.jar
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/usr/local/lib/hello-springboot-1.5.8.RELEASE.jar"]
