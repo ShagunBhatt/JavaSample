@@ -1,6 +1,6 @@
-FROM maven:3.5-jdk-8-alpine as build (2)
+FROM maven:3.5-jdk-8-alpine
 WORKDIR /app
-COPY --from=clone . /app (3)
+COPY . /app (3)
 RUN mvn spring-boot:run
 #FROM openjdk:8-jre-alpine
 #WORKDIR /app
